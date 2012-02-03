@@ -1,7 +1,7 @@
 #include <QString>
 #include <QTime>
 
-#include "thinfilm.h"
+#include "thinfilm.hpp"
 
 #include <iostream>
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
             layer[(i-8) % 3] = QString(argv[i]).toDouble();
             layers.push_back(layer);
         }
-    } else {    
+    } else {
         cout << "theta in deg :";
         cin >> theta;
 
@@ -95,20 +95,20 @@ int main(int argc, char *argv[])
     double absorptance;
     double psi, delta;
 
-        QTime time;
-        time.start();
-        for (int i = 0; i < 100000; ++i)
-    thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
-                       &reflectance, &transmittance, &absorptance, &psi, &delta);
+    QTime time;
+    time.start();
+    for (int i = 0; i < 100000; ++i)
+        thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
+                           &reflectance, &transmittance, &absorptance, &psi, &delta);
 
-        cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
+    cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
 
-        cout << "reflectance  =  " << reflectance * 100.0 << "%" << endl;
-        cout << "transmittance = " << transmittance * 100.0 << "%" << endl;
-        cout << "absorptance  =  " << absorptance * 100.0 << "%" << endl;
+    cout << "reflectance  =  " << reflectance * 100.0 << "%" << endl;
+    cout << "transmittance = " << transmittance * 100.0 << "%" << endl;
+    cout << "absorptance  =  " << absorptance * 100.0 << "%" << endl;
 
-        cout << "psi  =  " << psi * (180.0 / M_PI) << "°" << endl;
-        cout << "delta = " << delta * (180.0 / M_PI) << "°" << endl;
+    cout << "psi  =  " << psi * (180.0 / M_PI) << "°" << endl;
+    cout << "delta = " << delta * (180.0 / M_PI) << "°" << endl;
 
     return 0;
 }

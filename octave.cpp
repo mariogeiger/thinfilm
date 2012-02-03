@@ -1,7 +1,7 @@
 #include <QString>
 #include <QTime>
 
-#include "thinfilm.h"
+#include "thinfilm.hpp"
 
 #include <iostream>
 

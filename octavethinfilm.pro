@@ -8,7 +8,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += octave.cpp
-HEADERS += thinfilm.h
+HEADERS += thinfilm.hpp
 
 target.path = /usr/local/bin
 INSTALLS += target

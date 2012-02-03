@@ -16,12 +16,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-# thinfilm.cpp
 
-HEADERS += \
-    thinfilm.h
-
-#LIBS += -lthinfilm
+HEADERS += thinfilm.hpp
 
 target.path = /usr/local/bin
 INSTALLS += target
