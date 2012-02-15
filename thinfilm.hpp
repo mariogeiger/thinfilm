@@ -119,7 +119,7 @@ inline void simulate(
         complex incidentCosTheta,
         // wavelength of light (same unit as layers thickness)
         double lamda,
-        // angle of polarization 0 mean S and pi/2 mean P polarization
+        // angle of polarization 0 mean P and pi/2 mean S polarization
         double polarization,
         // complex index of refraxion of insident medium,
         // k value must be nagative or null
@@ -331,8 +331,8 @@ inline void simulate(
         const double reflectanceS = norm(reflectionCoefficientS);
 
         // sin^2 + cos^2 = 1
-        double polP = sin(polarization);
-        double polS = cos(polarization);
+        double polP = cos(polarization);
+        double polS = sin(polarization);
         polP *= polP;
         polS *= polS;
 
