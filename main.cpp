@@ -95,13 +95,13 @@ int main(int argc, char *argv[])
     double absorptance;
     double psi, delta;
 
-    QTime time;
-    time.start();
-    for (int i = 0; i < 100000; ++i)
-        thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
-                           &reflectance, &transmittance, &absorptance, &psi, &delta);
+    //    QTime time;
+    //    time.start();
+    //for (int i = 0; i < 100000; ++i)
+    thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
+                       &reflectance, &transmittance, &absorptance, &psi, &delta);
 
-    cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
+    //    cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
 
     cout << "reflectance  =  " << reflectance * 100.0 << "%" << endl;
     cout << "transmittance = " << transmittance * 100.0 << "%" << endl;

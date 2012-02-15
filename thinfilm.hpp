@@ -27,7 +27,7 @@
                 not verified.
 
    Function: 1) asin and acos for complex numbers (source Wikipedia)
-             2) simulate a multlayer coating (source Iris Marck)
+             2) simulate a multlayer coating (source Iris Mack)
 
    Thread Safe: Yes
 
@@ -104,7 +104,7 @@ inline complex acos(const complex &z)
                     \
                      \
                       \
-                       v  Transmitance
+                       v  Transmittance
 
 <<<<<<< HEAD
   **/
@@ -115,32 +115,32 @@ inline complex acos(const complex &z)
 //                        given in the form of n - ik
 
 inline void simulate(
-    // cosine of insident angle
-    complex incidentCosTheta,
-    // wavelength of light (same unit as layers thickness)
-    double lamda,
-    // angle of polarization 0 mean S and pi/2 mean P polarization
-    double polarization,
-    // complex index of refraxion of insident medium,
-    // k value must be nagative or null
-    complex nIncident,
-    // complex index of refraxion of exit medium,
-    // k value must be nagative or null
-    complex nExit,
-    // array of layers : each layer is composed of 3 double
-    //                      (thickness, n, k) k is positive
-    // in the array the layers are presented from
-    //           the insident one to the exit one
-    std::vector<blitz::TinyVector<double, 3> > layers,
-    // pointer for reflectance
-    double *reflectance = 0,
-    // pointer for transmittance need ptr of reflectance != 0
-    double *transmittance = 0,
-    // pointer for absorptance need ptr of transmittance != 0
-    double *absorptance = 0,
-    // pointers of psi and delta, they are optional
-    double *psi = 0, double *delta = 0
-    )
+        // cosine of insident angle
+        complex incidentCosTheta,
+        // wavelength of light (same unit as layers thickness)
+        double lamda,
+        // angle of polarization 0 mean S and pi/2 mean P polarization
+        double polarization,
+        // complex index of refraxion of insident medium,
+        // k value must be nagative or null
+        complex nIncident,
+        // complex index of refraxion of exit medium,
+        // k value must be nagative or null
+        complex nExit,
+        // array of layers : each layer is composed of 3 double
+        //                      (thickness, n, k) k is positive
+        // in the array the layers are presented from
+        //           the insident one to the exit one
+        std::vector<blitz::TinyVector<double, 3> > layers,
+        // pointer for reflectance
+        double *reflectance = 0,
+        // pointer for transmittance need ptr of reflectance != 0
+        double *transmittance = 0,
+        // pointer for absorptance need ptr of transmittance != 0
+        double *absorptance = 0,
+        // pointers of psi and delta, they are optional
+        double *psi = 0, double *delta = 0
+        )
 {
     // variables for optimization
     int layersAmount = layers.size();

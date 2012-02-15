@@ -4,13 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT      -= core gui
 
-TARGET = thinfilm
+TARGET   = thinfilm
 TEMPLATE = lib
 
 HEADERS += thinfilm.hpp
 
 headers.files = $$HEADERS
-headers.path = /usr/local/include
+headers.path  = /usr/local/include
 INSTALLS += headers
