@@ -4,8 +4,8 @@
 #include "thinfilm.hpp"
 
 #include <iostream>
+#include <iomanip>
 
-using namespace blitz;
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     double polar;
     thinfilm::complex nInc;
     thinfilm::complex nExi;
-    vector<TinyVector<double, 3> > layers;
+    vector<struct thinfilm::Layer> layers;
 
     if (argc >= 2 && QString(argv[1]).compare("--help") == 0) {
         cout << "theta(deg) lamda(nm) pol(deg0S) ninc kinc nexit kexit [ dlayer(nm) nlayer klayer ...]" << endl;
@@ -31,11 +31,11 @@ int main(int argc, char *argv[])
         nExi.real() = QString(argv[6]).toDouble();
         nExi.imag() = QString(argv[7]).toDouble();
 
-        for (int i = 8; i < argc; ++i) {
-            TinyVector<double, 3> layer;
-            layer[(i-8) % 3] = QString(argv[i]).toDouble(); i++;
-            layer[(i-8) % 3] = QString(argv[i]).toDouble(); i++;
-            layer[(i-8) % 3] = QString(argv[i]).toDouble();
+        for (int i = 8; i < argc; i += 3) {
+            struct thinfilm::Layer layer;
+            layer.thickness = QString(argv[i]).toDouble();
+            layer.refractiveIndex = thinfilm::complex(QString(argv[i+1]).toDouble(),
+                                                      -QString(argv[i+2]).toDouble());
             layers.push_back(layer);
         }
     } else {
@@ -62,16 +62,20 @@ int main(int argc, char *argv[])
 
         char yes;
         do {
-            TinyVector<double, 3> layer;
+            struct thinfilm::Layer layer;
 
             cout << "d layer in nm :";
-            cin >> layer[0];
+            cin >> layer.thickness;
 
             cout << "n layer :";
-            cin >> layer[1];
+            double n;
+            cin >> n;
 
             cout << "k layer :";
-            cin >> layer[2];
+            double k;
+            cin >> k;
+
+            layer.refractiveIndex = thinfilm::complex(n, -k);
 
             layers.push_back(layer);
 
@@ -86,7 +90,7 @@ int main(int argc, char *argv[])
 
     cout << nInc << endl;
     for (uint i = 0; i < layers.size(); ++i) {
-        cout << layers[i] << endl;
+        cout << layers[i].thickness << " " << layers[i].refractiveIndex << endl;
     }
     cout << nExi << endl;
 
@@ -95,20 +99,21 @@ int main(int argc, char *argv[])
     double absorptance;
     double psi, delta;
 
-    //    QTime time;
-    //    time.start();
-    //for (int i = 0; i < 100000; ++i)
-    thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
-                       &reflectance, &transmittance, &absorptance, &psi, &delta);
+    QTime time;
+    time.start();
+    for (int i = 0; i < 100000; ++i)
+        thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
+                           &reflectance, &transmittance, &absorptance, &psi, &delta);
 
-    //    cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
+    cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
 
-    cout << "reflectance  =  " << reflectance * 100.0 << "%" << endl;
-    cout << "transmittance = " << transmittance * 100.0 << "%" << endl;
-    cout << "absorptance  =  " << absorptance * 100.0 << "%" << endl;
+    cout << setprecision(30);
+    cout << "reflectance    = " << reflectance * 100.0 << " %" << endl;
+    cout << "transmittance  = " << transmittance * 100.0 << " %" << endl;
+    cout << "absorptance    = " << absorptance * 100.0 << " %" << endl;
 
-    cout << "psi  =  " << psi * (180.0 / M_PI) << "°" << endl;
-    cout << "delta = " << delta * (180.0 / M_PI) << "°" << endl;
+    cout << "psi    = " << psi * (180.0 / M_PI) << "°" << endl;
+    cout << "delta  = " << delta * (180.0 / M_PI) << "°" << endl;
 
     return 0;
 }
