@@ -1,6 +1,5 @@
-// ----------------------------------------------------------------------------
-/**
-   File: thinfilm.h
+/***********************************************************
+   File: thinfilm.hpp
 
    Status:   Version 1.0 Release 3
    Language: C++
@@ -36,8 +35,7 @@
    Date         Author        Description
    27.06.2011   Mario Geiger  Initial release
    31.03.2012   Mario Geiger  Release 3, performance Matrix22
-*/
-// ----------------------------------------------------------------------------
+***********************************************************/
 
 #ifndef THINFILM_H
 #define THINFILM_H
@@ -82,29 +80,32 @@ inline complex acos(const complex &z)
         v   /
 
         Incident medium
-            n - ik
+            n - i*k
  -------------------------------
         Layer 0 medium
-         ( d0 n0 k0 )
+         d0 (n0 - i*k0)
  -------------------------------
              ...
 
  -------------------------------
         Layer i medium
-         ( di ni ki )
+         di (ni - i*ki)
  -------------------------------
              ...
 
  -------------------------------
+        Layer n medium
+         dn (nn - i*kn)
+ -------------------------------
          Exit medium
-            n - ik
+            n - i*k
                     \
                      \
                       \
                        v  Transmittance
 
-<<<<<<< HEAD
-  **/
+**/
+// ----------------------------------------------------------------------------
 
 
 struct Layer {
@@ -116,12 +117,6 @@ struct Layer {
     complex refractiveIndex;
 };
 
-/*
-  Simple class for matrix 2x2
-  to obtain good preformance :
-  library blitz : 13us (100%)
-  Matrix22      : 8us  (60%)
- */
 class Matrix22 {
 public:
     Matrix22() {}
@@ -130,18 +125,20 @@ public:
     {
     }
 
-    // matrix 2x2 product
-    Matrix22 operator *(const Matrix22 &b) const {
-        return Matrix22(m11 * b.m11 + m12 * b.m21,
-                        m11 * b.m12 + m12 * b.m22,
-                        m21 * b.m11 + m22 * b.m21,
-                        m21 * b.m12 + m22 * b.m22);
+    Matrix22& operator*=(const Matrix22& b) {
+      complex x = m11 * b.m11 + m12 * b.m21;
+      m12 = m11 * b.m12 + m12 * b.m22;
+      m11 = x;
+      x = m21 * b.m11 + m22 * b.m21;
+      m22 = m21 * b.m12 + m22 * b.m22;
+      m21 = x;
+      return *this;
     }
 
     /*
-      m11   m12
-
-      m21   m22
+      ( m11   m12 )
+      (           )
+      ( m21   m22 )
      */
     complex m11;
     complex m12;
@@ -149,9 +146,12 @@ public:
     complex m22;
 };
 
-// complex index of refraxion nIncident and nExit are
-//                        given in the form of n - ik
+const Matrix22 operator*(Matrix22 a, const Matrix22& b)
+{
+  return a *= b;
+}
 
+// ----------------------------------------------------------------------------
 inline void simulate(
         // cosine of insident angle
         complex incidentCosTheta,
@@ -211,7 +211,7 @@ inline void simulate(
 
     // calculate cosine of exit medium with snell law optimized
     //  sin(theta0)    n0  =   sin(theta1)    n1
-    //       s0        n0  =        s0        n1
+    //       s0        n0  =        s1        n1
     // sqrt( 1 - c0² ) n0  =  sqrt( 1 - c1² ) n1
     // and solve for c1 :
     // c1 = sqrt( c0² n0² - n0² + n1² ) / n1
@@ -300,8 +300,8 @@ inline void simulate(
         // now we need to make the product of the main matrix with the layer matrix
 
         // do the matrix product
-        productMatrixP = productMatrixP * layerMatrixP;
-        productMatrixS = productMatrixS * layerMatrixS;
+        productMatrixP *= layerMatrixP;
+        productMatrixS *= layerMatrixS;
     }
 
 

@@ -1,7 +1,8 @@
+#include "thinfilm.hpp"
+
 #include <QString>
 #include <QTime>
 
-#include "thinfilm.hpp"
 
 #include <iostream>
 #include <iomanip>
