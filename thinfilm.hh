@@ -156,7 +156,7 @@ inline void simulate(
         // cosine of insident angle
         complex incidentCosTheta,
         // wavelength of light (same unit as layers thickness)
-        double lamda,
+        double lambda,
         // angle of polarization 0 mean P and pi/2 mean S polarization
         double polarization,
         // complex index of refraxion of insident medium,
@@ -169,7 +169,7 @@ inline void simulate(
         // array of layers
         // in the array the layers are presented from
         //           the insident one to the exit one
-        std::vector<struct Layer> layers,
+        std::vector<Layer> layers,
 
         // pointer for reflectance
         double *reflectance = 0,
@@ -257,8 +257,7 @@ inline void simulate(
     // i : for each layer
     for (int i = 0; i < layersAmount; ++i) {
 
-        // create complex number : n - ik
-        //const complex layerRefractiveIndex(layers[i][1], -layers[i][2]);
+        // layerRefractiveIndex complex number : n - ik
 
         // snell law
         const complex squareN1 =
@@ -277,8 +276,8 @@ inline void simulate(
 
         // now the delta dephasing of the layer
         const complex deltaLayer =
-                2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lamda;
-        // layers[i][0] is the thickness layer, is need to be the same unit of lamda
+                2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
+        // the thickness layer, is need to be the same unit of lambda
 
 
         // create the matrix layer
