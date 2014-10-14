@@ -1,6 +1,8 @@
 #include <mex.h>
 #include "thinfilm.hh"
 
+std::vector<thinfilm::complex> readComplexVector(const mxArray* array);
+
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
 	if (nrhs < 7)
@@ -37,17 +39,23 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	
 	double polarization = mxGetScalar(prhs[2]);
 	
-	thinfilm::complex nIncident(*mxGetPr(prhs[3]), mxIsComplex(prhs[3]) ? *mxGetPi(prhs[3]) : 0.0);
-	thinfilm::complex nExit    (*mxGetPr(prhs[4]), mxIsComplex(prhs[4]) ? *mxGetPi(prhs[4]) : 0.0);
+	std::vector<thinfilm::complex> nIncident = readComplexVector(prhs[3]);
+	if (nIncident.size() != 1 && nIncident.size() != lambdaLength)
+		mexErrMsgTxt("the incident index of refraction must either be a complex scalar or a vector of same length of lambda");
+
+	std::vector<thinfilm::complex> nExit     = readComplexVector(prhs[4]);
+	if (nExit.size() != 1 && nExit.size() != lambdaLength)
+		mexErrMsgTxt("the exit index of refraction must either be a complex scalar or a vector of same length of lambda");
 	
 	const mxArray* thicknesses = prhs[5];
-	const mxArray* indexes   = prhs[6];
+	const mxArray* indexes     = prhs[6];
 	
 	if (mxGetNumberOfElements(thicknesses) != mxGetNumberOfElements(indexes))
 		mexErrMsgTxt("thicknesses and indexes must contain the same amount of elements");
 	
+	int nLayers = mxGetNumberOfElements(thicknesses);
 	std::vector<thinfilm::Layer> layers;
-	for (int i = 0; i < mxGetNumberOfElements(thicknesses); ++i) {
+	for (int i = 0; i < nLayers; ++i) {
 		thinfilm::complex index(*mxGetPr(indexes), mxIsComplex(indexes) ? *mxGetPi(indexes) : 0.0);
 		if (imag(index) > 0.0) mexErrMsgTxt("the complex part of the index of refraction must be negative or null");
 		thinfilm::Layer layer;
@@ -57,11 +65,13 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	}
 	
 	for (int j = 0; j < lambdaLength; ++j) {
+		thinfilm::complex nInc = nIncident.size() == lambdaLength ? nIncident[j] : nIncident[0];
+		thinfilm::complex nExi = nExit.size() == lambdaLength ? nExit[j] : nExit[0];
 		for (int i = 0; i < thetaLength; ++i) {
 			thinfilm::complex incidentCosTheta = cos(mxGetPr(theta)[i]);
 
 			int k = j * thetaLength + i;
-			thinfilm::simulate(incidentCosTheta, mxGetPr(lambdaArray)[j], polarization, nIncident, nExit, layers, 
+			thinfilm::simulate(incidentCosTheta, mxGetPr(lambdaArray)[j], polarization, nInc, nExi, layers, 
 				reflectance   ? &reflectance[k]   : 0, 
 				transmittance ? &transmittance[k] : 0,
 				absorptance   ? &absorptance[k]   : 0, 
@@ -69,4 +79,23 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 				delta         ? &delta[k]         : 0);
 		}
 	}
+}
+
+std::vector<thinfilm::complex> readComplexVector(const mxArray* array)
+{
+	std::vector<thinfilm::complex> result;
+	int n = mxGetNumberOfElements(array);
+	
+	double* re = mxGetPr(array);
+	double* im = mxGetPi(array);
+	if (mxIsComplex(array)) {
+		for (int i = 0; i < n; ++i) {
+			result.push_back(thinfilm::complex(re[i], im[i]));
+		}
+	} else {
+		for (int i = 0; i < n; ++i) {
+			result.push_back(re[i]);
+		}
+	}
+	return result;
 }
