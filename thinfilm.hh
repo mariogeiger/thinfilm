@@ -117,8 +117,7 @@ struct Layer {
     complex refractiveIndex;
 };
 
-class Matrix22 {
-public:
+struct Matrix22 {
     Matrix22() {}
     Matrix22(complex m11, complex m12, complex m21, complex m22) :
         m11(m11), m12(m12), m21(m21), m22(m22)
@@ -193,7 +192,7 @@ inline void simulate(
             calculate :
             admittance of the layer
             shift phase of the layer
-            caracterictic matrix
+            characteristic matrix
             product of the layer matrix and the main matrix
 
       2   : we do strange equations with the main matrix to extract
@@ -276,7 +275,8 @@ inline void simulate(
 
         // now the delta dephasing of the layer
         const complex deltaLayer =
-                2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
+                2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness / layerCosTheta / lambda;
+                //! Modif juillet 2015 : il faut diviser par cos(theta) !
         // the thickness layer, is need to be the same unit of lambda
 
 
@@ -327,7 +327,7 @@ inline void simulate(
             (admittanceIncidentP - cP / bP) / (admittanceIncidentP + cP / bP);
 
     const complex reflectionCoefficientS =
-            (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS);
+            (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS); // juillet 2015 : ok avec cette formule
 
 
 
@@ -359,7 +359,8 @@ inline void simulate(
                     real(admittanceExitP) * (1.0 - reflectanceP) / real(bP * conj(cP));
 
             const double transmittanceS =
-                    real(admittanceExitS) * (1.0 - reflectanceS) / real(bS * conj(cS));
+                    //real(admittanceExitS) * (1.0 - reflectanceS) / real(bS * conj(cS));
+                    norm(2.* admittanceIncidentS / (bS * admittanceIncidentS - cS));
 
 
             *transmittance = polP * transmittanceP + polS * transmittanceS;
