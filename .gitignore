@@ -1,3 +1,6 @@
 *.user
 *.o
 *.mex
+*.aux
+*.log
+*.out

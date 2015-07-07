@@ -1,4 +1,4 @@
-#include "thinfilm.hpp"
+#include "thinfilm2.hh"
 
 #include <QString>
 #include <QTime>

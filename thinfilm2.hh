@@ -272,8 +272,9 @@ inline void simulate(
 
     // now the delta dephasing of the layer
     const complex deltaLayer =
-        2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
+        -2. * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
     // juillet 2015 : il faut bien multiplier par le cos => il faut regarder les front d'ondes !
+    // onde incidante ~ exp(i(kx-wt))
     // the thickness layer, is need to be the same unit of lambda
 
 
@@ -321,18 +322,18 @@ inline void simulate(
 
   // calculate the reflectance
   const complex reflectionCoefficientP =
-      (admittanceIncidentP - cP / bP) / (admittanceIncidentP + cP / bP);
+      (bP - cP / admittanceIncidentP) / (bP + cP / admittanceIncidentP);
 
   const complex reflectionCoefficientS =
-      (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS); // juillet 2015 : ok avec cette formule
+      (bS - cS / admittanceIncidentS) / (bS + cS / admittanceIncidentS);
 
 
 
   if (reflectance != 0) {
 
     // norm returns the norm value of the complex number : norm(3+4i) = 25
-    const double reflectanceP = norm(reflectionCoefficientP);
-    const double reflectanceS = norm(reflectionCoefficientS);
+    const double reflectanceP = std::norm(reflectionCoefficientP);
+    const double reflectanceS = std::norm(reflectionCoefficientS);
 
     // sin^2 + cos^2 = 1
     double polP = cos(polarization);
@@ -351,13 +352,15 @@ inline void simulate(
                         " is maybe false (incident k != 0)", __FILE__, __LINE__);
       }
 
+      //! il semble que ces résultats soit faux!
+      const complex transmitionCoefficientP =
+          2. / (bP + cP / admittanceIncidentP) * incidentCosTheta / exitCosTheta;
+      const complex transmitionCoefficientS =
+          2. / (bS + cS / admittanceIncidentS);
+
       // and the transmittance
-      const double transmittanceP =
-          real(admittanceExitP) * (1.0 - reflectanceP) / real(bP * conj(cP));
-
-      const double transmittanceS =
-          real(admittanceExitS) * (1.0 - reflectanceS) / real(bS * conj(cS));
-
+      const double transmittanceP = std::norm(transmitionCoefficientP);
+      const double transmittanceS = std::norm(transmitionCoefficientS);
 
       *transmittance = polP * transmittanceP + polS * transmittanceS;
 
@@ -367,13 +370,11 @@ inline void simulate(
   }
 
   if (psi != 0 && delta != 0) {
-    const complex reflectionCoefficientPS =
-        reflectionCoefficientP / reflectionCoefficientS;
+    // abs returns the length of the complex number
+    *psi = std::atan2(std::abs(reflectionCoefficientP), std::abs(reflectionCoefficientS));
 
-    // abs returns the absolute value of the complex
-    *psi = atan(abs(reflectionCoefficientPS));
-    // arg return phase angle of complex
-    *delta = arg(reflectionCoefficientPS);
+    // arg return phase angle of the complex number
+    *delta = std::arg(reflectionCoefficientP) - std::arg(reflectionCoefficientS);
   }
 }
 

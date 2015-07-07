@@ -23,7 +23,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4594176"
-     inkscape:cx="110.72967"
+     inkscape:cx="-17.403635"
      inkscape:cy="174.3765"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -116,7 +116,7 @@
        inkscape:connector-curvature="0" />
     <g
        id="g4964"
-       transform="translate(-21.904559,-12.075555)">
+       transform="matrix(0.6561,0,0,0.6561,85.269367,104.79676)">
       <g
          id="content"
          transform="matrix(1.0629921,0,0,-1.0629921,-186.02362,789.27165)"
@@ -136,7 +136,7 @@
            style="fill:#000000;stroke-width:0" /></g>    </g>
     <g
        id="g5007"
-       transform="translate(37.023056,-12.075555)">
+       transform="matrix(0.6561,0,0,0.6561,144.1129,104.79676)">
       <g
          word-spacing="normal"
          letter-spacing="normal"
@@ -156,7 +156,7 @@
            style="fill:#000000;stroke-width:0" /></g>    </g>
     <g
        id="g3063"
-       transform="matrix(3.031708,0,0,3.031708,-30.467302,145.4159)">
+       transform="matrix(1.9891037,0,0,1.9891037,71.393071,226.79074)">
       <g
          id="g3065"
          transform="matrix(0.32093164,0,0,-0.32093164,-56.163038,210.75)"
@@ -180,7 +180,7 @@
            style="fill:#000000;stroke-width:0" /></g>    </g>
     <g
        id="g3163"
-       transform="matrix(3.031708,0,0,3.031708,85.815815,145.4159)">
+       transform="matrix(1.9891037,0,0,1.9891037,187.8619,226.79074)">
       <g
          word-spacing="normal"
          letter-spacing="normal"
@@ -204,7 +204,7 @@
            style="fill:#000000;stroke-width:0" /></g>    </g>
     <g
        id="g3271"
-       transform="matrix(3.031708,0,0,3.031708,-60.507107,209.85613)">
+       transform="matrix(1.9891037,0,0,1.9891037,40.379566,289.03762)">
       <g
          id="g3273"
          transform="matrix(0.32093164,0,0,-0.32093164,-56.163038,210.75)"
@@ -228,7 +228,7 @@
            style="fill:#000000;stroke-width:0" /></g>    </g>
     <g
        id="g3387"
-       transform="matrix(3.031708,0,0,3.031708,114.08076,221.45678)">
+       transform="matrix(1.9891037,0,0,1.9891037,215.15314,300.63827)">
       <g
          word-spacing="normal"
          letter-spacing="normal"

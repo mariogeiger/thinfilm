@@ -5,4 +5,4 @@ lambdas = linspace(200, 1000, 110);
 
 [r,t,a] = thinfilm(angles, lambdas, pi/4, 1, 2, [200], [1.5]);
 
-mesh(lambdas, angles, r);
+mesh(lambdas, angles, t);

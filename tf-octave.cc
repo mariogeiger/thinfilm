@@ -1,5 +1,5 @@
 #include <mex.h>
-#include "thinfilm.hh"
+#include "thinfilm2.hh"
 
 std::vector<thinfilm::complex> readComplexVector(const mxArray* array);
 
