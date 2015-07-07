@@ -80,25 +80,25 @@ inline complex acos(const complex &z)
         v   /
 
         Incident medium
-            n - i*k
+            n + i*k
  -------------------------------
         Layer 0 medium
-         d0 (n0 - i*k0)
+         d0 (n0 + i*k0)
  -------------------------------
              ...
 
  -------------------------------
         Layer i medium
-         di (ni - i*ki)
+         di (ni + i*ki)
  -------------------------------
              ...
 
  -------------------------------
         Layer n medium
-         dn (nn - i*kn)
+         dn (nn + i*kn)
  -------------------------------
          Exit medium
-            n - i*k
+            n + i*k
                     \
                      \
                       \
@@ -359,8 +359,10 @@ inline void simulate(
           2. / (bS + cS / admittanceIncidentS);
 
       // and the transmittance
-      const double transmittanceP = std::norm(transmitionCoefficientP);
-      const double transmittanceS = std::norm(transmitionCoefficientS);
+      const double transmittanceP = std::norm(transmitionCoefficientP)
+                                    * exitCosTheta.real() * nExit.real() / (incidentCosTheta.real() * nIncident.real());
+      const double transmittanceS = std::norm(transmitionCoefficientS)
+                                    * exitCosTheta.real() * nExit.real() / (incidentCosTheta.real() * nIncident.real());
 
       *transmittance = polP * transmittanceP + polS * transmittanceS;
 

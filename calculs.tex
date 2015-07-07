@@ -192,10 +192,6 @@ L = \begin{pmatrix} 1 & 1 \\ \eta & -\eta \end{pmatrix} \begin{pmatrix} \psi^{-1
 
 où $\delta = n \frac{2\pi}{\lambda_0} d \cos \theta$
 
-Si on prend $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{exit} = \begin{pmatrix}t \\ 0\end{pmatrix}$ et $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{inc} = \begin{pmatrix}1 \\ r\end{pmatrix}$ on a alors :
-\begin{dmath}
-\begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{1}{2 \eta_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
-\end{dmath}
 
 
 \paragraph{Polarisation parallèle}
@@ -215,21 +211,7 @@ Si on prend $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{exit} = \beg
 
 Les matrices $L$ ont la même forme que dans le cas perpendiculaire.
 
-Si on prend $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{exit} = \begin{pmatrix}t \\ 0\end{pmatrix}$ et $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{inc} = \begin{pmatrix}1 \\ r\end{pmatrix}$ on obtient :
-\begin{dmath}
-\begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{1}{2 n_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \frac{n_{exit}}{\eta_{exit}} \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
-\end{dmath}
 
-On peut écrire différemment le terme suivant :
-\begin{dmath}
-\frac{1}{n_{inc}} \frac{n_{exit}}{\eta_{exit}} = \frac{1}{\eta_{inc} \cos \theta_{inc}} \frac{n_{exit}}{n_{exit} / \cos \theta_{exit}}
-= \frac{1}{\eta_{inc}} \frac{\cos \theta_{exit}}{\cos \theta_{inc}}
-\end{dmath}
-
-Pour avoir au final :
-\begin{dmath}
-\begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{\cos \theta_{exit}}{\cos \theta_{inc}} \frac{1}{2 \eta_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
-\end{dmath}
 
 
 
@@ -245,8 +227,29 @@ Pour avoir au final :
 
 
 \section{Coefficients de transmition et reflexion}
+\begin{dmath}
+	\vec E = \vec e \exp(i (\vec k \cdot \vec x - \omega t)) + \text{c.c.}
+\end{dmath}
+\begin{equation}
+	\vec H = \frac{1}{\omega} \vec k \wedge \vec E = \frac{n}{c} \frac{\vec k}{k} \wedge \vec E 
+\end{equation}
+\begin{equation}
+	\vec S = \vec E \wedge \vec H = \frac{n}{c} \vec E \wedge (\frac{\vec k}{k} \wedge \vec E) = \frac{n}{c} \vec E^2 \frac{\vec k}{k}
+\end{equation}
+La surface du front d'onde incident est déformé après la transmission. Sa surface peut changer :
+\begin{equation}
+	\frac{S_{exit}}{S_{inc}} = \frac{\cos \theta_{exit}}{\cos \theta_{inc}}
+\end{equation}
+
+On relie alors les coefficients $r$ et $t$ à la réflectance et transmittance : $R$ et $T$ (proportionnelles à $\vec S$) par :
+\begin{align}
+	R = \frac{S_{inc} \frac{n_{inc}}{c} \vec E_{r}^2}{S_{inc} \frac{n_{inc}}{c} \vec E_{i}^2} = \frac{S_{inc}\frac{n_{inc}}{c} |r|^2 \vec E_{i}^2}{S_{inc} \frac{n_{inc}}{c} \vec E_{i}^2} = |r|^2 \\
+	T = \frac{S_{exit} \frac{n_{exit}}{c} \vec E_{t}^2}{S_{inc} \frac{n_{inc}}{c} \vec E_{i}^2} = \frac{\cos \theta_{exit}}{\cos \theta_{inc}} \frac{n_{exit}}{n_{inc}} |t|^2
+\end{align}
+
 \paragraph{Polarisation perpendiculaire}
 
+Si on prend $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{exit} = \begin{pmatrix}t \\ 0\end{pmatrix}$ et $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{inc} = \begin{pmatrix}1 \\ r\end{pmatrix}$ on a alors :
 \begin{dmath}
 \begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{1}{2 \eta_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
 \end{dmath}
@@ -259,22 +262,35 @@ Si on définit
 
 \begin{dmath}
 \begin{pmatrix}1/t \\ r/t \end{pmatrix} = \begin{pmatrix} \frac{b + c / \eta_{inc}}{2} \\ \frac{b - c / \eta_{inc}}{2} \end{pmatrix} \Rightarrow
-\left\{ \begin{array}{l}
-	t = \frac{2}{b + c / \eta_{inc}} \\
+\left\{ \begin{array}{lll}
+	t = \frac{2}{b + c / \eta_{inc}} &\Rightarrow & T = \frac{\eta_{exit}}{\eta_{inc}} \left| \frac{2}{b + c / \eta_{inc}} \right|^2 \\
 	r = \frac{b - c / \eta_{inc}}{2} \frac{2}{b + c / \eta_{inc}} = \frac{b - c / \eta_{inc}}{b + c / \eta_{inc}}
 \end{array} \right.
 \end{dmath}
 
 
 \paragraph{Polarisation parallèle}
+Si on prend $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{exit} = \begin{pmatrix}t \\ 0\end{pmatrix}$ et $\begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_{inc} = \begin{pmatrix}1 \\ r\end{pmatrix}$ on obtient :
+
+\begin{dmath}
+\begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{1}{2 n_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \frac{n_{exit}}{\eta_{exit}} \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
+\end{dmath}
+
+On peut écrire différemment le terme suivant :
+\begin{dmath}
+\frac{1}{n_{inc}} \frac{n_{exit}}{\eta_{exit}} = \frac{1}{\eta_{inc} \cos \theta_{inc}} \frac{n_{exit}}{n_{exit} / \cos \theta_{exit}}
+= \frac{1}{\eta_{inc}} \frac{\cos \theta_{exit}}{\cos \theta_{inc}}
+\end{dmath}
+
+Pour avoir au final :
 \begin{dmath}
 \begin{pmatrix}1/t \\ r/t \end{pmatrix} = \frac{\cos \theta_{exit}}{\cos \theta_{inc}} \frac{1}{2 \eta_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} L_1 L_2 L_3 \begin{pmatrix} 1 \\ \eta_{exit} \end{pmatrix}
 \end{dmath}
 
 \begin{dmath}
 \begin{pmatrix}1/t \\ r/t \end{pmatrix} =  \frac{\cos \theta_{exit}}{\cos \theta_{inc}} \begin{pmatrix} \frac{b + c / \eta_{inc}}{2} \\ \frac{b - c / \eta_{inc}}{2} \end{pmatrix} \Rightarrow
-\left\{ \begin{array}{l}
-	t = \frac{2}{b + c / \eta_{inc}} \frac{\cos \theta_{inc}}{\cos \theta_{exit}} \\
+\left\{ \begin{array}{lll}
+	t = \frac{2}{b + c / \eta_{inc}} \frac{\cos \theta_{inc}}{\cos \theta_{exit}}  &\Rightarrow & T = \frac{\eta_{exit}}{\eta_{inc}} \left| \frac{2}{b + c / \eta_{inc}} \right|^2\\
 	r = \frac{b - c / \eta_{inc}}{b + c / \eta_{inc}}
 \end{array} \right.
 \end{dmath}
