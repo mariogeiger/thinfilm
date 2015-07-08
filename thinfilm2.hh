@@ -71,7 +71,7 @@ inline complex acos(const complex &z)
 
 // ----------------------------------------------------------------------------
 /**
-  \
+  \               ^
    \             /  Reflectance
     \           /
      \         /
@@ -88,8 +88,8 @@ inline complex acos(const complex &z)
              ...
 
  -------------------------------
-        Layer i medium
-         di (ni + i*ki)
+        Layer j medium
+         dj (nj + i*kj)
  -------------------------------
              ...
 
@@ -112,8 +112,8 @@ struct Layer {
   // use the same unit of wavelength
   double thickness;
 
-  // with k negative
-  // example (1.5, -0.001)
+  // with k positive
+  // example (1.5, +0.001)
   complex refractiveIndex;
 };
 
@@ -172,9 +172,9 @@ inline void simulate(
 
     // pointer for reflectance
     double *reflectance = 0,
-    // pointer for transmittance need ptr of reflectance != 0
+    // pointer for transmittance
     double *transmittance = 0,
-    // pointer for absorptance need ptr of transmittance != 0
+    // pointer for absorptance need ptr of reflectance,transmittance != 0
     double *absorptance = 0,
     // pointers of psi and delta, they are optional
     double *psi = 0, double *delta = 0
@@ -328,6 +328,10 @@ inline void simulate(
       (bS - cS / admittanceIncidentS) / (bS + cS / admittanceIncidentS);
 
 
+  double polP = cos(polarization);
+  double polS = sin(polarization);
+  polP *= polP;
+  polS *= polS;
 
   if (reflectance != 0) {
 
@@ -335,40 +339,26 @@ inline void simulate(
     const double reflectanceP = std::norm(reflectionCoefficientP);
     const double reflectanceS = std::norm(reflectionCoefficientS);
 
-    // sin^2 + cos^2 = 1
-    double polP = cos(polarization);
-    double polS = sin(polarization);
-    polP *= polP;
-    polS *= polS;
-
     // calculation of the reflectance weighted on the polarization
     *reflectance = polP * reflectanceP + polS * reflectanceS;
+  }
 
-    if (transmittance != 0) {
-
-      // warning ! : the transmittance is correct only if kIncident == 0
-      if (imag(nIncident) != 0.0) {
-        fprintf(stderr, "%s:%d : warning ! the transmittance"
-                        " is maybe false (incident k != 0)", __FILE__, __LINE__);
-      }
-
-      //! il semble que ces résultats soit faux!
-      const complex transmitionCoefficientP =
-          2. / (bP + cP / admittanceIncidentP) * incidentCosTheta / exitCosTheta;
-      const complex transmitionCoefficientS =
-          2. / (bS + cS / admittanceIncidentS);
-
-      // and the transmittance
-      const double transmittanceP = std::norm(transmitionCoefficientP)
-                                    * exitCosTheta.real() * nExit.real() / (incidentCosTheta.real() * nIncident.real());
-      const double transmittanceS = std::norm(transmitionCoefficientS)
-                                    * exitCosTheta.real() * nExit.real() / (incidentCosTheta.real() * nIncident.real());
-
-      *transmittance = polP * transmittanceP + polS * transmittanceS;
-
-      if (absorptance != 0)
-        *absorptance = 1.0 - *reflectance - *transmittance;
+  if (transmittance != 0) {
+    // warning ! : the transmittance is correct only if kIncident == 0
+    if (imag(nIncident) != 0.0) {
+      fprintf(stderr, "%s:%d : warning ! the transmittance"
+                      " is maybe false (incident k != 0)", __FILE__, __LINE__);
     }
+
+    // the transmittance (le std::abs est au bol !!! aucune idée pour le cas n complexe !)
+    const double transmittanceP = std::abs(admittanceExitP / admittanceIncidentP) * std::norm(2.0 / (bP + cP / admittanceIncidentP));
+    const double transmittanceS = std::abs(admittanceExitS / admittanceIncidentS) * std::norm(2.0 / (bS + cS / admittanceIncidentS));
+
+    *transmittance = polP * transmittanceP + polS * transmittanceS;
+  }
+
+  if (reflectance != 0 && transmittance != 0 && absorptance != 0) {
+    *absorptance = 1.0 - *reflectance - *transmittance;
   }
 
   if (psi != 0 && delta != 0) {
