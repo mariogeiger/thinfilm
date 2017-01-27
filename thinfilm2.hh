@@ -350,7 +350,10 @@ inline void simulate(
                       " is maybe false (incident k != 0)", __FILE__, __LINE__);
     }
 
-    // the transmittance (le std::abs est au bol !!! aucune idée pour le cas n complexe !)
+    // the transmittance
+    // pour les std::abs je n'ai aucune idée.
+    // Dans le cas où l'indice de refraction incident et sortie
+    // sont réels j'ai fais le calcul dans doc/calculs.pdf.
     const double transmittanceP = std::abs(admittanceExitP / admittanceIncidentP) * std::norm(2.0 / (bP + cP / admittanceIncidentP));
     const double transmittanceS = std::abs(admittanceExitS / admittanceIncidentS) * std::norm(2.0 / (bS + cS / admittanceIncidentS));
 
@@ -374,4 +377,3 @@ inline void simulate(
 } // end namespace
 
 #endif // THINFILM_H
-

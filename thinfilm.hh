@@ -381,4 +381,3 @@ inline void simulate(
 } // end namespace
 
 #endif // THINFILM_H
-
