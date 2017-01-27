@@ -12,7 +12,7 @@
 \usepackage{hyperref}			% liens vers les figures et formules
 \usepackage{lipsum, comment}
 
-\renewcommand{\thesubfigure}{\roman{subfigure}} 
+\renewcommand{\thesubfigure}{\roman{subfigure}}
 % Numérotation romaine des sous-figures pour éviter collision avec légende
 
 \begin{document}
@@ -26,7 +26,7 @@
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=3cm]{interface.pdf}
+	\includegraphics[height=3cm]{Figures/interface.pdf}
 \end{figure}
 
 $\rightarrow_1$ est la phase et amplitude de l'onde incidente depuis la gauche. $\leftarrow_1$ est la phase et amplitude de l'onde réfléchie vers la gauche. $\rightarrow_2$ est celle de l'onde transmise et finalement $\leftarrow_2$ est nul.
@@ -35,12 +35,12 @@ $\rightarrow_1$ est la phase et amplitude de l'onde incidente depuis la gauche. 
 \left\{ \begin{array}{lll}
 \rightarrow_2 = t_{12} \rightarrow_1 + r_{21} \leftarrow_2  &\Rightarrow &\rightarrow_1 = \frac{\rightarrow_2 - r_{21} \leftarrow_2}{t_{12}} \\
 \leftarrow_1 = t_{21} \leftarrow_2 + r_{12} \rightarrow_1 &\Rightarrow &\leftarrow_1 = t_{21} \leftarrow_2 + r_{12} \frac{\rightarrow_2 - r_{21} \leftarrow_2}{t_{12}}
-\end{array}\right. 
+\end{array}\right.
 \end{equation}
 
 \begin{equation}\label{mtrans}
-\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_1 = 
-\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix} 
+\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_1 =
+\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix}
 \begin{pmatrix}\rightarrow \\ \leftarrow\end{pmatrix}_2
 \end{equation}
 
@@ -66,12 +66,12 @@ $\rightarrow_1$ est la phase et amplitude de l'onde incidente depuis la gauche. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=3cm]{fresnel.pdf}
+	\includegraphics[height=3cm]{Figures/fresnel.pdf}
 \end{figure}
 
 \paragraph{Polarisation perpendiculaire}
 \begin{equation}
-\left\{ \begin{array}{l} 
+\left\{ \begin{array}{l}
 r_s = r_{12} = \frac{n_1 \cos \theta_1 - n_2 \cos \theta_2}{n_1 \cos \theta_1 + n_2 \cos \theta_2} = \frac{\eta_1 - \eta_2}{\eta_1 + \eta_2} \\
 t_s = t_{12} = \frac{2 n_1 \cos \theta_1}{n_1 \cos \theta_1 + n_2 \cos \theta_2} = \frac{2 \eta_1}{\eta_1 + \eta_2}
 \end{array} \right.
@@ -80,7 +80,7 @@ Avec $\eta = n \cos \theta$.
 
 \paragraph{Polarisation parallèle}
 \begin{equation}
-\left\{ \begin{array}{l} 
+\left\{ \begin{array}{l}
 r_p = r_{12} = \frac{n_1 \cos \theta_2 - n_2 \cos \theta_1}{n_2 \cos \theta_1 + n_1 \cos \theta_2} = \frac{\eta_1 - \eta_2}{\eta_1 + \eta_2} \\
 t_p = t_{12} = \frac{2 n_1 \cos \theta_1}{n_2 \cos \theta_1 + n_1 \cos \theta_2} = \frac{2 n_1 / \cos \theta_2}{\eta_1 + \eta_2} = \frac{2 \frac{n_1}{n_2} \eta_2}{\eta_1 + \eta_2}
 \end{array} \right.
@@ -106,16 +106,16 @@ Avec $\eta = n / \cos \theta$.
 \section{Matrice de transfert de Fresnel}
 \paragraph{Polarisation perpendiculaire}
 \begin{dmath}\label{mfress}
-\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix} = 
+\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix} =
 \frac{1}{2 \eta_1} \begin{pmatrix} \eta_1 + \eta_2 & \eta_1 - \eta_2 \\ \eta_1 - \eta_2 & \frac{2 \eta_1 2 \eta_2}{\eta_1 + \eta_2} - \frac{(\eta_1 - \eta_2)(\eta_2 - \eta_1)}{\eta_1 + \eta_2} \end{pmatrix} =
-\frac{1}{2 \eta_1} \begin{pmatrix} \eta_1 + \eta_2 & \eta_1 - \eta_2 \\ \eta_1 - \eta_2 & \eta_1 + \eta_2 \end{pmatrix} = 
+\frac{1}{2 \eta_1} \begin{pmatrix} \eta_1 + \eta_2 & \eta_1 - \eta_2 \\ \eta_1 - \eta_2 & \eta_1 + \eta_2 \end{pmatrix} =
 \frac{1}{2 \eta_1} \begin{pmatrix} \eta_1 & 1 \\ \eta_1 & -1 \end{pmatrix}\begin{pmatrix} 1 & 1 \\ \eta_2 & -\eta_2 \end{pmatrix}
 \end{dmath}
 
 
 \paragraph{Polarisation parallèle}
 \begin{dmath}\label{mfresp}
-\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix} = 
+\frac{1}{t_{12}}\begin{pmatrix} 1 & -r_{21} \\ r_{12} & t_{12}t_{21} - r_{12}r_{21} \end{pmatrix} =
 \frac{1}{2 \frac{n_1}{n_2} \eta_2} \begin{pmatrix} \eta_1 + \eta_2 & \eta_1 - \eta_2 \\ \eta_1 - \eta_2 & \frac{2 \frac{n_1}{n_2} \eta_2 2 \frac{n_2}{n_1} \eta_1}{\eta_1 + \eta_2} - \frac{(\eta_1 - \eta_2)(\eta_2 - \eta_1)}{\eta_1 + \eta_2} \end{pmatrix} =
 \frac{1}{2 \frac{n_1}{n_2} \eta_2} \begin{pmatrix} \eta_1 + \eta_2 & \eta_1 - \eta_2 \\ \eta_1 - \eta_2 & \eta_1 + \eta_2 \end{pmatrix} =
 \frac{1}{2 n_1} \begin{pmatrix} \eta_1 & 1 \\ \eta_1 & -1 \end{pmatrix} \frac{n_2}{\eta_2} \begin{pmatrix} 1 & 1 \\ \eta_2 & -\eta_2 \end{pmatrix}
@@ -137,7 +137,7 @@ Avec $\eta = n / \cos \theta$.
 \section{Matrice de transfert de propagation}
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=3cm]{propagation.pdf}
+	\includegraphics[height=3cm]{Figures/propagation.pdf}
 \end{figure}
 
 On a $t_{12} = t_{21} = \psi$ et aucune réflexion.
@@ -166,12 +166,12 @@ $\psi = \exp(i k d \cos \theta) = \exp(i n k_0 d \cos \theta) = \exp(i n \frac{2
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=3cm]{film.pdf}
+	\includegraphics[height=3cm]{Figures/film.pdf}
 \end{figure}
 \paragraph{Polarisation perpendiculaire}
 
 \begin{dmath}
-\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_{inc} = 
+\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_{inc} =
 \frac{1}{2 \eta_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} \overbrace{ \begin{pmatrix} 1 & 1 \\ \eta_1 & -\eta_1 \end{pmatrix}
 \begin{pmatrix} \psi_1^{-1} & 0 \\ 0 & \psi_1 \end{pmatrix}
 \frac{1}{2 \eta_1} \begin{pmatrix} \eta_1 & 1 \\ \eta_1 & -1 \end{pmatrix} }^{L_1} \begin{pmatrix} 1 & 1 \\ \eta_2 & -\eta_2 \end{pmatrix}
@@ -185,7 +185,7 @@ $\psi = \exp(i k d \cos \theta) = \exp(i n k_0 d \cos \theta) = \exp(i n \frac{2
 \end{dmath}
 
 \begin{dmath}
-L = \begin{pmatrix} 1 & 1 \\ \eta & -\eta \end{pmatrix} \begin{pmatrix} \psi^{-1} & 0 \\ 0 & \psi \end{pmatrix} \frac{1}{2 \eta} \begin{pmatrix} \eta & 1 \\ \eta & -1 \end{pmatrix} = 
+L = \begin{pmatrix} 1 & 1 \\ \eta & -\eta \end{pmatrix} \begin{pmatrix} \psi^{-1} & 0 \\ 0 & \psi \end{pmatrix} \frac{1}{2 \eta} \begin{pmatrix} \eta & 1 \\ \eta & -1 \end{pmatrix} =
 \begin{pmatrix} \frac{\psi + \psi^{-1}}{2} & -\frac{\psi - \psi^{-1}}{2\eta} \\ -\eta\frac{\psi - \psi^{-1}}{2} & \frac{\psi + \psi^{-1}}{2} \end{pmatrix} =
 \begin{pmatrix} \cos \delta & -\frac{i \sin \delta}{\eta} \\ -\eta i \sin \delta & \cos \delta \end{pmatrix}
 \end{dmath}
@@ -196,7 +196,7 @@ où $\delta = n \frac{2\pi}{\lambda_0} d \cos \theta$
 
 \paragraph{Polarisation parallèle}
 \begin{dmath}
-\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_{inc} = 
+\begin{pmatrix}\rightarrow \\ \leftarrow \end{pmatrix}_{inc} =
 \frac{1}{2 n_{inc}} \begin{pmatrix} \eta_{inc} & 1 \\ \eta_{inc} & -1 \end{pmatrix} \overbrace{ \frac{n_1}{\eta_1} \begin{pmatrix} 1 & 1 \\ \eta_1 & -\eta_1 \end{pmatrix}
 \begin{pmatrix} \psi_1^{-1} & 0 \\ 0 & \psi_1 \end{pmatrix}
 \frac{1}{2 n_1} \begin{pmatrix} \eta_1 & 1 \\ \eta_1 & -1 \end{pmatrix} }^{L_1} \frac{n_2}{\eta_2} \begin{pmatrix} 1 & 1 \\ \eta_2 & -\eta_2 \end{pmatrix}
@@ -229,14 +229,14 @@ Les matrices $L$ ont la même forme que dans le cas perpendiculaire.
 \section{Coefficients de transmition et reflexion}
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=5cm]{transmittance.pdf}
+	\includegraphics[height=5cm]{Figures/transmittance.pdf}
 \end{figure}
 
 \begin{dmath}
 	\vec E = \vec e \exp(i (\vec k \cdot \vec x - \omega t)) + \text{c.c.}
 \end{dmath}
 \begin{equation}
-	\vec H = \frac{1}{\omega} \vec k \wedge \vec E = \frac{n}{c} \frac{\vec k}{k} \wedge \vec E 
+	\vec H = \frac{1}{\omega} \vec k \wedge \vec E = \frac{n}{c} \frac{\vec k}{k} \wedge \vec E
 \end{equation}
 \begin{equation}
 	\vec S = \vec E \wedge \vec H = \frac{n}{c} \vec E \wedge (\frac{\vec k}{k} \wedge \vec E) = \frac{n}{c} \vec E^2 \frac{\vec k}{k}

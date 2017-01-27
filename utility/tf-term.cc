@@ -1,4 +1,4 @@
-#include "thinfilm2.hh"
+#include "../thinfilm2.hh"
 
 #include <QString>
 #include <QTime>
@@ -27,10 +27,10 @@ int main(int argc, char *argv[])
         theta = QString(argv[1]).toDouble();
         lamda = QString(argv[2]).toDouble();
         polar = QString(argv[3]).toDouble();
-        nInc.real() = QString(argv[4]).toDouble();
-        nInc.imag() = QString(argv[5]).toDouble();
-        nExi.real() = QString(argv[6]).toDouble();
-        nExi.imag() = QString(argv[7]).toDouble();
+		nInc.real(QString(argv[4]).toDouble());
+		nInc.imag(QString(argv[5]).toDouble());
+		nExi.real(QString(argv[6]).toDouble());
+		nExi.imag(QString(argv[7]).toDouble());
 
         for (int i = 8; i < argc; i += 3) {
             struct thinfilm::Layer layer;
@@ -49,17 +49,22 @@ int main(int argc, char *argv[])
         cout << "polarization in deg 0isS :";
         cin >> polar;
 
+		double x;
         cout << "n incident :";
-        cin >> nInc.real();
+		cin >> x;
+		nInc.real(x);
 
         cout << "k incident :";
-        cin >> nInc.imag();
+		cin >> x;
+		nInc.imag(x);
 
         cout << "n exit :";
-        cin >> nExi.real();
+		cin >> x;
+		nExi.real(x);
 
         cout << "k exit :";
-        cin >> nExi.imag();
+		cin >> x;
+		nExi.imag(x);
 
         char yes;
         do {
