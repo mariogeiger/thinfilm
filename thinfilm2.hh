@@ -1,9 +1,4 @@
 /***********************************************************
-   File: thinfilm.hpp
-
-   Status:   Version 1.0 Release 3
-   Language: C++
-
    License: GNU Public License
 
    (c) Copyright LESO-PB 2011
@@ -24,50 +19,20 @@
                 Tfcalc. absorbing incident
                 medium, psi and delta are
                 not verified.
-
-   Function: 1) asin and acos for complex numbers (source Wikipedia)
-             2) simulate a multlayer coating (source Iris Mack)
-
-   Thread Safe: Yes
-
-
-   Change History:
-   Date         Author        Description
-   27.06.2011   Mario Geiger  Initial release
-   31.03.2012   Mario Geiger  Release 3, performance Matrix22
 ***********************************************************/
 
 #ifndef THINFILM_H
 #define THINFILM_H
 
-#include <complex>          // for complex numbers
-#include <cstdio>           // for printf
-#include <vector>           // for a vector of layers
+#include <complex>
+#include <cstdio>
+#include <vector>
 
 
 // ----------------------------------------------------------------------------
 namespace thinfilm {
 
-// complex typedef
 typedef std::complex<double> complex;
-
-// complex i value
-const complex onei(0, 1);
-
-
-// asin and acos for complex numbers
-// source: http://fr.wikipedia.org/wiki/Trigonom%C3%A9trie_complexe
-inline complex asin(const complex &z)
-{
-  return -onei * log(onei * z + sqrt(1.0 - z * z));
-}
-
-
-inline complex acos(const complex &z)
-{
-  return -onei * log(       z + sqrt(z * z - 1.0));
-}
-
 
 // ----------------------------------------------------------------------------
 /**
@@ -109,10 +74,10 @@ inline complex acos(const complex &z)
 
 
 struct Layer {
-  // use the same unit of wavelength
+  // express in the same unit as the wavelength
   double thickness;
 
-  // with k positive
+  // with k non-negative
   // example (1.5, +0.001)
   complex refractiveIndex;
 };
@@ -151,18 +116,16 @@ const Matrix22 operator*(Matrix22 a, const Matrix22& b)
 }
 
 // ----------------------------------------------------------------------------
-inline void simulate(
+inline void compute(
     // cosine of insident angle
     complex incidentCosTheta,
     // wavelength of light (same unit as layers thickness)
     double lambda,
-    // angle of polarization 0 mean P and pi/2 mean S polarization
-    double polarization,
     // complex index of refraxion of insident medium,
-    // k value must be nagative or null
+    // k value must be non-negative
     complex nIncident,
     // complex index of refraxion of exit medium,
-    // k value must be nagative or null
+    // k value must be non-negative
     complex nExit,
 
     // array of layers
@@ -170,17 +133,11 @@ inline void simulate(
     //           the insident one to the exit one
     std::vector<Layer> layers,
 
-    // pointer for reflectance
-    double *reflectance = 0,
-    // pointer for transmittance
-    double *transmittance = 0,
-    // pointer for absorptance need ptr of reflectance,transmittance != 0
-    double *absorptance = 0,
-    // pointers of psi and delta, they are optional
-    double *psi = 0, double *delta = 0
-                                     )
+    double *reflectanceP,
+    double *reflectanceS,
+    double *transmittanceP,
+    double *transmittanceS)
 {
-  // variables for optimization
   int layersAmount = layers.size();
 
   /**
@@ -214,8 +171,7 @@ inline void simulate(
   // sqrt( 1 - c0² ) n0  =  sqrt( 1 - c1² ) n1
   // and solve for c1 :
   // c1 = sqrt( c0² n0² - n0² + n1² ) / n1
-  const complex squareIncidentCosTheta =
-      incidentCosTheta * incidentCosTheta;
+  const complex squareIncidentCosTheta = incidentCosTheta * incidentCosTheta;
   const complex ratioIncidentExit = nIncident / nExit;
   const complex exitCosTheta =
       std::sqrt(1. - (1. - squareIncidentCosTheta) * ratioIncidentExit*ratioIncidentExit);
@@ -255,7 +211,7 @@ inline void simulate(
   // i : for each layer
   for (int i = 0; i < layersAmount; ++i) {
 
-    // layerRefractiveIndex complex number : n - ik
+    // layerRefractiveIndex complex number : n + ik
 
     // snell law
     const complex ratio = nIncident / layers[i].refractiveIndex;
@@ -272,25 +228,24 @@ inline void simulate(
 
     // now the delta dephasing of the layer
     const complex deltaLayer =
-        -2. * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
+        2.0 * M_PI * layers[i].refractiveIndex * layers[i].thickness * layerCosTheta / lambda;
     // juillet 2015 : il faut bien multiplier par le cos => il faut regarder les front d'ondes !
-    // onde incidante ~ exp(i(kx-wt))
     // the thickness layer, is need to be the same unit of lambda
 
 
     // create the matrix layer
     const complex c = cos(deltaLayer);
-    const complex s = sin(deltaLayer) * onei;
+    const complex s = sin(deltaLayer);
 
     layerMatrixP.m11 = c;
-    layerMatrixP.m12 = s / admittanceLayerP;
-    layerMatrixP.m21 = s * admittanceLayerP;
+    layerMatrixP.m12 = -complex(0.0, 1.0) * s / admittanceLayerP;
+    layerMatrixP.m21 = -complex(0.0, 1.0) * s * admittanceLayerP;
     layerMatrixP.m22 = c;
 
 
     layerMatrixS.m11 = c;
-    layerMatrixS.m12 = s / admittanceLayerS;
-    layerMatrixS.m21 = s * admittanceLayerS;
+    layerMatrixS.m12 = -complex(0.0, 1.0) * s / admittanceLayerS;
+    layerMatrixS.m21 = -complex(0.0, 1.0) * s * admittanceLayerS;
     layerMatrixS.m22 = c;
 
 
@@ -328,49 +283,22 @@ inline void simulate(
       (bS - cS / admittanceIncidentS) / (bS + cS / admittanceIncidentS);
 
 
-  double polP = cos(polarization);
-  double polS = sin(polarization);
-  polP *= polP;
-  polS *= polS;
+  // norm returns the norm value of the complex number : norm(3+4i) = 25
+  *reflectanceP = std::norm(reflectionCoefficientP);
+  *reflectanceS = std::norm(reflectionCoefficientS);
 
-  if (reflectance != 0) {
-
-    // norm returns the norm value of the complex number : norm(3+4i) = 25
-    const double reflectanceP = std::norm(reflectionCoefficientP);
-    const double reflectanceS = std::norm(reflectionCoefficientS);
-
-    // calculation of the reflectance weighted on the polarization
-    *reflectance = polP * reflectanceP + polS * reflectanceS;
+  // warning ! : the transmittance is correct only if kIncident == 0
+  if (imag(nIncident) != 0.0) {
+    fprintf(stderr, "%s:%d : warning ! the transmittance"
+                    " is maybe false (incident k != 0)", __FILE__, __LINE__);
   }
 
-  if (transmittance != 0) {
-    // warning ! : the transmittance is correct only if kIncident == 0
-    if (imag(nIncident) != 0.0) {
-      fprintf(stderr, "%s:%d : warning ! the transmittance"
-                      " is maybe false (incident k != 0)", __FILE__, __LINE__);
-    }
-
-    // the transmittance
-    // pour les std::abs je n'ai aucune idée.
-    // Dans le cas où l'indice de refraction incident et sortie
-    // sont réels j'ai fais le calcul dans doc/calculs.pdf.
-    const double transmittanceP = std::abs(admittanceExitP / admittanceIncidentP) * std::norm(2.0 / (bP + cP / admittanceIncidentP));
-    const double transmittanceS = std::abs(admittanceExitS / admittanceIncidentS) * std::norm(2.0 / (bS + cS / admittanceIncidentS));
-
-    *transmittance = polP * transmittanceP + polS * transmittanceS;
-  }
-
-  if (reflectance != 0 && transmittance != 0 && absorptance != 0) {
-    *absorptance = 1.0 - *reflectance - *transmittance;
-  }
-
-  if (psi != 0 && delta != 0) {
-    // abs returns the length of the complex number
-    *psi = std::atan2(std::abs(reflectionCoefficientP), std::abs(reflectionCoefficientS));
-
-    // arg return phase angle of the complex number
-    *delta = std::arg(reflectionCoefficientP) - std::arg(reflectionCoefficientS);
-  }
+  // the transmittance
+  // pour les std::abs je n'ai aucune idée.
+  // Dans le cas où l'indice de refraction incident et sortie
+  // sont réels j'ai fais le calcul dans doc/calculs.pdf.
+  *transmittanceP = std::abs(admittanceExitP / admittanceIncidentP) * std::norm(2.0 / (bP + cP / admittanceIncidentP));
+  *transmittanceS = std::abs(admittanceExitS / admittanceIncidentS) * std::norm(2.0 / (bS + cS / admittanceIncidentS));
 }
 
 

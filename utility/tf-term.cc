@@ -13,26 +13,24 @@ int main(int argc, char *argv[])
 {
     double theta;
     double lamda;
-    double polar;
     thinfilm::complex nInc;
     thinfilm::complex nExi;
     vector<struct thinfilm::Layer> layers;
 
     if (argc >= 2 && QString(argv[1]).compare("--help") == 0) {
-        cout << "theta(deg) lamda(nm) pol(deg0S) ninc kinc nexit kexit [ dlayer(nm) nlayer klayer ...]" << endl;
+		cout << "theta(deg) lamda(nm) ninc kinc nexit kexit [ dlayer(nm) nlayer klayer ...]" << endl;
         return 0;
     }
 
     if (argc >= 8 && (argc - 8) % 3 == 0) {
         theta = QString(argv[1]).toDouble();
         lamda = QString(argv[2]).toDouble();
-        polar = QString(argv[3]).toDouble();
-		nInc.real(QString(argv[4]).toDouble());
-		nInc.imag(QString(argv[5]).toDouble());
-		nExi.real(QString(argv[6]).toDouble());
-		nExi.imag(QString(argv[7]).toDouble());
+		nInc.real(QString(argv[3]).toDouble());
+		nInc.imag(QString(argv[4]).toDouble());
+		nExi.real(QString(argv[5]).toDouble());
+		nExi.imag(QString(argv[6]).toDouble());
 
-        for (int i = 8; i < argc; i += 3) {
+		for (int i = 7; i < argc; i += 3) {
             struct thinfilm::Layer layer;
             layer.thickness = QString(argv[i]).toDouble();
             layer.refractiveIndex = thinfilm::complex(QString(argv[i+1]).toDouble(),
@@ -45,9 +43,6 @@ int main(int argc, char *argv[])
 
         cout << "lamda in nm :";
         cin >> lamda;
-
-        cout << "polarization in deg 0isS :";
-        cin >> polar;
 
 		double x;
         cout << "n incident :";
@@ -100,26 +95,21 @@ int main(int argc, char *argv[])
     }
     cout << nExi << endl;
 
-    double reflectance;
-    double transmittance;
-    double absorptance;
-    double psi, delta;
+	double reflectanceP, reflectanceS;
+	double transmittanceP, transmittanceS;
 
     QTime time;
     time.start();
     for (int i = 0; i < 100000; ++i)
-        thinfilm::simulate(cos(theta * (M_PI / 180.0)), lamda, polar * (M_PI / 180.0), nInc, nExi, layers,
-                           &reflectance, &transmittance, &absorptance, &psi, &delta);
+		thinfilm::compute(cos(theta * (M_PI / 180.0)), lamda, nInc, nExi, layers,
+						   &reflectanceP, &reflectanceS, &transmittanceP, &transmittanceS);
 
     cout << "execution time = " << time.elapsed()/100.0 << "us" << endl;
 
     cout << setprecision(30);
-    cout << "reflectance    = " << reflectance * 100.0 << " %" << endl;
-    cout << "transmittance  = " << transmittance * 100.0 << " %" << endl;
-    cout << "absorptance    = " << absorptance * 100.0 << " %" << endl;
-
-    cout << "psi    = " << psi * (180.0 / M_PI) << "°" << endl;
-    cout << "delta  = " << delta * (180.0 / M_PI) << "°" << endl;
+	cout << "                    P / S" << endl;
+	cout << "reflectance    = " << reflectanceP * 100.0 << " / " << reflectanceS * 100.0 << " %" << endl;
+	cout << "transmittance  = " << transmittanceP * 100.0 << " / " << transmittanceS * 100.0 << " %" << endl;
 
     return 0;
 }

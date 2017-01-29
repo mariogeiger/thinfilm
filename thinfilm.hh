@@ -1,9 +1,4 @@
 /***********************************************************
-   File: thinfilm.hpp
-
-   Status:   Version 1.0 Release 3
-   Language: C++
-
    License: GNU Public License
 
    (c) Copyright LESO-PB 2011
@@ -24,54 +19,24 @@
                 Tfcalc. absorbing incident
                 medium, psi and delta are
                 not verified.
-
-   Function: 1) asin and acos for complex numbers (source Wikipedia)
-             2) simulate a multlayer coating (source Iris Mack)
-
-   Thread Safe: Yes
-
-
-   Change History:
-   Date         Author        Description
-   27.06.2011   Mario Geiger  Initial release
-   31.03.2012   Mario Geiger  Release 3, performance Matrix22
 ***********************************************************/
 
 #ifndef THINFILM_H
 #define THINFILM_H
 
-#include <complex>          // for complex numbers
-#include <cstdio>           // for printf
-#include <vector>           // for a vector of layers
+#include <complex>
+#include <cstdio>
+#include <vector>
 
 
 // ----------------------------------------------------------------------------
 namespace thinfilm {
 
-// complex typedef
 typedef std::complex<double> complex;
-
-// complex i value
-const complex onei(0, 1);
-
-
-// asin and acos for complex numbers
-// source: http://fr.wikipedia.org/wiki/Trigonom%C3%A9trie_complexe
-inline complex asin(const complex &z)
-{
-  return -onei * log(onei * z + sqrt(1.0 - z * z));
-}
-
-
-inline complex acos(const complex &z)
-{
-  return -onei * log(       z + sqrt(z * z - 1.0));
-}
-
 
 // ----------------------------------------------------------------------------
 /**
-  \
+  \               ^
    \             /  Reflectance
     \           /
      \         /
@@ -88,8 +53,8 @@ inline complex acos(const complex &z)
              ...
 
  -------------------------------
-        Layer i medium
-         di (ni - i*ki)
+        Layer j medium
+         di (nj - i*kj)
  -------------------------------
              ...
 
@@ -109,10 +74,10 @@ inline complex acos(const complex &z)
 
 
 struct Layer {
-  // use the same unit of wavelength
+  // express in the same unit as the wavelength
   double thickness;
 
-  // with k negative
+  // with k non-positive
   // example (1.5, -0.001)
   complex refractiveIndex;
 };
@@ -159,10 +124,10 @@ inline void simulate(
     // angle of polarization 0 mean P and pi/2 mean S polarization
     double polarization,
     // complex index of refraxion of insident medium,
-    // k value must be nagative or null
+    // k value must be non-positive
     complex nIncident,
     // complex index of refraxion of exit medium,
-    // k value must be nagative or null
+    // k value must be non-positive
     complex nExit,
 
     // array of layers
@@ -180,7 +145,6 @@ inline void simulate(
     double *psi = 0, double *delta = 0
                                      )
 {
-  // variables for optimization
   int layersAmount = layers.size();
 
   /**
@@ -214,8 +178,7 @@ inline void simulate(
   // sqrt( 1 - c0² ) n0  =  sqrt( 1 - c1² ) n1
   // and solve for c1 :
   // c1 = sqrt( c0² n0² - n0² + n1² ) / n1
-  const complex squareIncidentCosTheta =
-      incidentCosTheta * incidentCosTheta;
+  const complex squareIncidentCosTheta = incidentCosTheta * incidentCosTheta;
   const complex ratioIncidentExit = nIncident / nExit;
   const complex exitCosTheta =
       std::sqrt(1. - (1. - squareIncidentCosTheta) * ratioIncidentExit*ratioIncidentExit);
@@ -279,17 +242,17 @@ inline void simulate(
 
     // create the matrix layer
     const complex c = cos(deltaLayer);
-    const complex s = sin(deltaLayer) * onei;
+    const complex s = sin(deltaLayer);
 
     layerMatrixP.m11 = c;
-    layerMatrixP.m12 = s / admittanceLayerP;
-    layerMatrixP.m21 = s * admittanceLayerP;
+    layerMatrixP.m12 = complex(0.0, 1.0) * s / admittanceLayerP;
+    layerMatrixP.m21 = complex(0.0, 1.0) * s * admittanceLayerP;
     layerMatrixP.m22 = c;
 
 
     layerMatrixS.m11 = c;
-    layerMatrixS.m12 = s / admittanceLayerS;
-    layerMatrixS.m21 = s * admittanceLayerS;
+    layerMatrixS.m12 = complex(0.0, 1.0) * s / admittanceLayerS;
+    layerMatrixS.m21 = complex(0.0, 1.0) * s * admittanceLayerS;
     layerMatrixS.m22 = c;
 
 
