@@ -1,4 +1,4 @@
-# pylint: disable=C
+# pylint: disable=C,R
 import cmath
 import numpy as np
 

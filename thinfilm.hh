@@ -287,7 +287,8 @@ inline void simulate(
       (admittanceIncidentP - cP / bP) / (admittanceIncidentP + cP / bP);
 
   const complex reflectionCoefficientS =
-      (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS); // juillet 2015 : ok avec cette formule
+      (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS);
+  // juillet 2015 : ok avec cette formule
 
 
 

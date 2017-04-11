@@ -277,10 +277,10 @@ inline void compute(
 
   // calculate the reflectance
   const complex reflectionCoefficientP =
-      (bP - cP / admittanceIncidentP) / (bP + cP / admittanceIncidentP);
+      (admittanceIncidentP - cP / bP) / (admittanceIncidentP + cP / bP);
 
   const complex reflectionCoefficientS =
-      (bS - cS / admittanceIncidentS) / (bS + cS / admittanceIncidentS);
+      (admittanceIncidentS - cS / bS) / (admittanceIncidentS + cS / bS);
 
 
   // norm returns the norm value of the complex number : norm(3+4i) = 25
