@@ -82,14 +82,11 @@ void compute(double incidentCosTheta, complex nIncident, complex nExit, const st
     double denomP = std::norm(bP * nIncident + cP * incidentCosTheta);
     double denomS = std::norm(bS * nIncident * incidentCosTheta + cS);
 
-    if (denomP != 0.0) {
-        *reflectanceP = std::norm(bP * nIncident - cP * incidentCosTheta) / denomP;
-        *transmittanceP = numerator / denomP;
-    }
-    if (denomS != 0.0) {
-        *reflectanceS = std::norm(bS * nIncident * incidentCosTheta - cS) / denomS;
-        *transmittanceS = numerator / denomS;
-    }
+    *reflectanceP = std::norm(bP * nIncident - cP * incidentCosTheta) / denomP;
+    *transmittanceP = numerator / denomP;
+
+    *reflectanceS = std::norm(bS * nIncident * incidentCosTheta - cS) / denomS;
+    *transmittanceS = numerator / denomS;
 }
 
 }
