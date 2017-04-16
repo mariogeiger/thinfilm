@@ -1,3 +1,7 @@
+*.hh.gch
+thinfilm
+*.ipynb_checkpoints
+__pycache__
 *.user
 *.o
 *.mex

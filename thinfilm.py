@@ -1,12 +1,14 @@
-# pylint: disable=C,R
+# pylint: disable=C,R,E1101
 import cmath
 import numpy as np
 
 # layers = [(index of refraxion, thickness / lambda in vaccum), second layer, ...]
 def compute(incidentCosTheta, nIncident, nExit, layers):
 
-    productMatrixP = np.eye(2)
-    productMatrixS = np.eye(2)
+    # sin(Theta)*nIncident must be purely real
+
+    MatrixP = np.array([[nIncident, incidentCosTheta], [nIncident, -incidentCosTheta]]) / (2 * nIncident * incidentCosTheta)
+    MatrixS = np.array([[nIncident * incidentCosTheta, 1], [nIncident * incidentCosTheta, -1]]) / (2 * nIncident * incidentCosTheta)
 
     for layer in layers:
         n = layer[0]
@@ -18,30 +20,24 @@ def compute(incidentCosTheta, nIncident, nExit, layers):
         c = cmath.cos(deltaLayer)
         s = cmath.sin(deltaLayer)
 
-        productMatrixP = np.dot(productMatrixP, np.array([[c, -1j * s * cosTheta / n], [-1j * s * n / cosTheta, c]]))
-        productMatrixS = np.dot(productMatrixS, np.array([[c, -1j * s / cosTheta / n], [-1j * s * n * cosTheta, c]]))
+        MatrixP = np.dot(MatrixP, np.array([[c, -1j * s * cosTheta / n], [-1j * s * n / cosTheta, c]]))
+        MatrixS = np.dot(MatrixS, np.array([[c, -1j * s / cosTheta / n], [-1j * s * n * cosTheta, c]]))
 
     exitCosTheta = cmath.sqrt(1. - (1. - incidentCosTheta ** 2) * (nIncident / nExit) ** 2)
 
-    bP, cP = np.dot(productMatrixP, [exitCosTheta, nExit]) # has been multiplied by exitCosTheta to avoid division by 0
-    bS, cS = np.dot(productMatrixS, [1.0, nExit * exitCosTheta])
+    MatrixP = np.dot(MatrixP, np.array([[exitCosTheta, exitCosTheta], [nExit, -nExit]]))
+    MatrixS = np.dot(MatrixS, np.array([[1, 1], [nExit * exitCosTheta, -nExit * exitCosTheta]]))
 
-    numerator = 4 * abs(nExit * exitCosTheta * nIncident * incidentCosTheta)
-    denomP = abs(bP * nIncident + cP * incidentCosTheta) ** 2
-    denomS = abs(bS * nIncident * incidentCosTheta + cS) ** 2
+    rP = MatrixP[1,0] / MatrixP[0,0]
+    rS = MatrixS[1,0] / MatrixS[0,0]
 
-    if denomP != 0.0:
-        reflectanceP = abs(bP * nIncident - cP * incidentCosTheta) ** 2 / denomP
-        transmittanceP = numerator / denomP
-    else:
-        reflectanceP = -1
-        transmittanceP = -1
+    tP = 1 / MatrixP[0,0]
+    tS = 1 / MatrixS[0,0]
 
-    if denomS != 0.0:
-        reflectanceS = abs(bS * nIncident * incidentCosTheta - cS) ** 2 / denomS
-        transmittanceS = numerator / denomS
-    else:
-        reflectanceS = -1
-        transmittanceS = -1
+    reflectanceP = abs(rP)**2
+    reflectanceS = abs(rS)**2
+
+    transmittanceP = abs(tP)**2 * (nExit * np.conj(exitCosTheta)).real / (nIncident * np.conj(incidentCosTheta)).real
+    transmittanceS = abs(tS)**2 * (nExit * exitCosTheta).real / (nIncident * incidentCosTheta).real
 
     return reflectanceP, reflectanceS, transmittanceP, transmittanceS
