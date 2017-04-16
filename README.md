@@ -4,9 +4,9 @@ source : https://arxiv.org/abs/1603.02720
 
 ## Transfer Matrix
 
-    / ->1 \     1   / 1                    -r21 \   / ->2 \
-   (       ) = --- (                             ) (       )
-    \ <-1 /    t12  \ r12     t12 t21 - r12 r21 /   \ <-2 /
+     / ->1 \     1   / 1                    -r21 \   / ->2 \
+    (       ) = --- (                             ) (       )
+     \ <-1 /    t12  \ r12     t12 t21 - r12 r21 /   \ <-2 /
 
 ## Dielectric interface Transfer Matrix
 
