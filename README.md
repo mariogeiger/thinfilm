@@ -31,14 +31,14 @@ for the P polarisation. For the interface, the transfer matrix reduces to
 
 ## Decomposition of the Transfer Matrix
 
-                1       (n1 cos(th1)    1) (1                        1)
-    M_S = ------------- (                ) (                          )
-          2 n1 cos(th1) (n1 cos(th1)   -1) (n2 cos(th2)   -n2 cos(th2))
+                1        /n1 cos(th1)    1\   /1                        1\
+    M_S = ------------- (                  ) (                            )
+          2 n1 cos(th1)  \n1 cos(th1)   -1/   \n2 cos(th2)   -n2 cos(th2)/
 
 for the S polarisation. And
 
-                 1       (n1    cos(th1)) (cos(th2)   cos(th2))
-    M_P  = ------------- (              ) (                   )
-           2 n1 cos(th1) (n1   -cos(th1)) (n2              -n2)
+                1         /n1    cos(th1)\   /cos(th2)   cos(th2)\
+    M_P  = ------------- (                ) (                     )
+           2 n1 cos(th1)  \n1   -cos(th1)/   \n2              -n2/
 
 for P polarisation
