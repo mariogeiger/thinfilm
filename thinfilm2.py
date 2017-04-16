@@ -1,4 +1,4 @@
-# pylint: disable=C,R
+# pylint: disable=C,R,E1101
 import cmath
 import numpy as np
 
@@ -22,22 +22,22 @@ def compute(incidentCosTheta, nIncident, nExit, layers):
 
         MatrixP = np.dot(MatrixP, np.array([[c, -1j * s * cosTheta / n], [-1j * s * n / cosTheta, c]]))
         MatrixS = np.dot(MatrixS, np.array([[c, -1j * s / cosTheta / n], [-1j * s * n * cosTheta, c]]))
-    
+
     exitCosTheta = cmath.sqrt(1. - (1. - incidentCosTheta ** 2) * (nIncident / nExit) ** 2)
-    
+
     MatrixP = np.dot(MatrixP, np.array([[exitCosTheta, exitCosTheta], [nExit, -nExit]]))
     MatrixS = np.dot(MatrixS, np.array([[1, 1], [nExit * exitCosTheta, -nExit * exitCosTheta]]))
-    
+
     rP = MatrixP[1,0] / MatrixP[0,0]
     rS = MatrixS[1,0] / MatrixS[0,0]
-    
+
     tP = 1 / MatrixP[0,0]
     tS = 1 / MatrixS[0,0]
-    
+
     reflectanceP = abs(rP)**2
     reflectanceS = abs(rS)**2
-    
+
     transmittanceP = abs(tP)**2 * (nExit * np.conj(exitCosTheta)).real / (nIncident * np.conj(incidentCosTheta)).real
     transmittanceS = abs(tS)**2 * (nExit * exitCosTheta).real / (nIncident * incidentCosTheta).real
-    
+
     return reflectanceP, reflectanceS, transmittanceP, transmittanceS
